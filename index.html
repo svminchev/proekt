@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Викторина: Тела и вещества</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; }
+    .question { margin-top: 20px; }
+    .options { margin: 10px 0; }
+    .option { display: block; margin: 5px 0; padding: 10px; cursor: pointer; border: 1px solid #ddd; }
+    .correct { background-color: #a3d5a3; }
+    .incorrect { background-color: #e5a3a3; }
+    #score { font-size: 1.2em; margin-top: 10px; }
+    #next-btn { display: none; padding: 10px 20px; margin-top: 10px; }
+    #final-message { display: none; font-size: 1.2em; margin-top: 20px; }
+    #smiley { font-size: 2em; }
+    #znaiko { position: absolute; top: 10px; left: 10px; width: 80px; }
+    .emoji { font-size: 1.5em; margin-left: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Викторина: Тела и вещества</h1>
+  <!-- Добавяме изображението на Знайко -->
+  <img id="znaiko" src="znaiko.png" alt="Знайко">
+  <div id="score">Точки: 0</div>
+  <div id="quiz">
+    <div class="question" id="question">Въпросът ще се покаже тук</div>
+    <div class="options" id="options"></div>
+    <button id="next-btn" onclick="nextQuestion()">Следващ въпрос</button>
+    <div id="final-message">
+      <div id="result"></div>
+      <div id="smiley"></div>
+    </div>
+  </div>
+  
+  <script>
+    const questions = [
+      { q: "Кое от следните е твърдо тяло?", a: "Лед", options: ["Въздух", "Вода", "Лед"] },
+      { q: "Кое от изброените не е състояние на веществата?", a: "Звездно", options: ["Твърдо", "Звездно", "Газообразно"] },
+      { q: "Как се нарича процесът на преминаване от твърдо в течно състояние?", a: "Топене", options: ["Изпарение", "Топене", "Възникване"] },
+      { q: "Кое вещество е газообразно?", a: "Въздух", options: ["Лед", "Въздух", "Вода"] },
+      { q: "Кое състояние на водата е твърдо?", a: "Лед", options: ["Пара", "Лед", "Вода"] },
+      { q: "Коя е най-малката частица на веществото?", a: "Молекула", options: ["Молекула", "Гранула", "Елемент"] },
+      { q: "Кое е течно вещество?", a: "Мляко", options: ["Камък", "Мляко", "Въздух"] },
+      { q: "Какво представлява димът?", a: "Газ и твърди частици", options: ["Твърдо вещество", "Газ и твърди частици", "Течно вещество"] },
+      { q: "Кое от следните може да се топи?", a: "Сняг", options: ["Сняг", "Въздух", "Светлина"] },
+      { q: "Какво е характерно за течностите?", a: "Имат обем, но приемат формата на съда", options: ["Нямат обем", "Имат форма", "Имат обем, но приемат формата на съда"] }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function loadQuestion() {
+      document.getElementById("next-btn").style.display = "none";
+      document.getElementById("question").textContent = questions[currentQuestion].q;
+      const optionsDiv = document.getElementById("options");
+      optionsDiv.innerHTML = "";
+      questions[currentQuestion].options.forEach(option => {
+        const optionElement = document.createElement("div");
+        optionElement.className = "option";
+        optionElement.textContent = option;
+        optionElement.onclick = () => checkAnswer(optionElement, option);
+        optionsDiv.appendChild(optionElement);
+      });
+    }
+
+    function checkAnswer(element, answer) {
+      if (answer === questions[currentQuestion].a) {
+        element.classList.add("correct");
+        score++;
+        document.getElementById("score").textContent = `Точки: ${score}`;
+        element.innerHTML += " <span class='emoji'>✔️</span>";
+      } else {
+        element.classList.add("incorrect");
+        element.innerHTML += " <span class='emoji'>❌</span>";
+      }
+      document.querySelectorAll(".option").forEach(option => option.onclick = null);
+      document.getElementById("next-btn").style.display = "inline-block";
+      document.getElementById("next-btn").textContent = currentQuestion < questions.length - 1 ? "Следващ въпрос" : "Край";
+    }
+
+    function nextQuestion() {
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        loadQuestion();
+      } else {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      document.getElementById("quiz").style.display = "none";
+      document.getElementById("final-message").style.display = "block";
+      document.getElementById("result").textContent = `Вие събрахте общо ${score} точки`;
+      const smiley = document.getElementById("smiley");
+      if (score >= 9) {
+        document.getElementById("result").textContent += " Справихте се отлично!";
+        smiley.textContent = "😊";
+      } else if (score >= 7) {
+        document.getElementById("result").textContent += " Справихте се много добре!";
+        smiley.textContent = "😊";
+      } else if (score >= 5) {
+        document.getElementById("result").textContent += " Справихте се добре!";
+        smiley.textContent = "😊";
+      } else {
+        document.getElementById("result").textContent += " Прочети още по темата и играй отново!";
+        smiley.textContent = "😞";
+      }
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
+
+
